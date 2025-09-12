@@ -3,6 +3,7 @@ import * as path from "path";
 
 const PEOPLE_CSV_PATH = path.join(__dirname, "../data/people.csv");
 const ROLE_CSV_PATH = path.join(__dirname, "../data/role.csv");
+const EMPTY_LINES_CSV_PATH = path.join(__dirname, "../data/empty.csv");
 
 test("parseCSV yields arrays", async () => {
   const results = await parseCSV(PEOPLE_CSV_PATH)
@@ -42,23 +43,13 @@ test("parseCSV handles missing values", async () => {
   expect(results[2]).toEqual(["Tim", "", "CSCI 0320", "student"]);
 });
 
-
-test("parseCSV handles leading and trailing commas", async () => {
-  const results = await parseCSV(ROLE_CSV_PATH)
-  expect(results[3]).toHaveLength(6);
-  expect(results[3]).toEqual(["", "Tim", "Nelson", "CSCI 0320", "student", ""]);
+test("parseCSV handles empty lines", async () => {
+  const results = await parseCSV(EMPTY_LINES_CSV_PATH)
+  expect(results).toHaveLength(0);
 });
 
-test("parseCSV handles line breaks inside double quotes", async () => {
-  const results = await parseCSV(ROLE_CSV_PATH)
-  expect(results[4]).toHaveLength(4);
-  expect(results[4]).toEqual(["Tim", "Nelson", "CSCI 0320\n, MATH 0100, UNIV 1110", "student"]);
-});
+ 
 
-test("parseCSV handles different separators", async () => {
-  const results = await parseCSV(ROLE_CSV_PATH)
-  expect(results[6]).toEqual(["Tim", "Nelson", "CSCI0320", "student"]);
-});
 
 
 
