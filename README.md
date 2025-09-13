@@ -3,7 +3,7 @@
 ### Task C: Proposing Enhancement
 
 - #### Step 1: Brainstorm on your own.
-Handling line breaks inside of quotes, fields inside double quotes as one, using other separators besides commas, maybe converting numbers that are strings into type number
+Handling line breaks inside of quotes, fields inside double quotes as one, using other separators besides commas, maybe converting numbers that are strings into type number, handle title row in CSV
 
 - #### Step 2: Use an LLM to help expand your perspective.
 

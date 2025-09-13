@@ -5,9 +5,15 @@ import {z} from "zod";
 
 
 interface Error<T>{
-  error: z.ZodError
-  line: number
-  row: string[]
+  success: false;
+  error: z.ZodError;
+  line: number;
+  row: string[] | T[];
+}
+
+interface Success<T>{
+  success: true;
+  data: T[] | string[][];
 }
 
 /**
@@ -23,7 +29,7 @@ interface Error<T>{
  * @param path The path to the file being loaded.
  * @returns a "promise" to produce a 2-d array of cell values
  */
-export async function parseCSV<T>(path: string, schema: z.ZodType<T>): Promise<string[][] | Error<T> | T[]>  {
+export async function parseCSV<T>(path: string, schema: z.ZodType<T>): Promise<Error<T> | Success<T>>{
   // This initial block of code reads from a file in Node.js. The "rl"
   // value can be iterated over in a "for" loop. 
   const fileStream = fs.createReadStream(path);
@@ -43,7 +49,7 @@ export async function parseCSV<T>(path: string, schema: z.ZodType<T>): Promise<s
   let lineNumber = 0;
   for await (const line of rl) {
     lineNumber++;
-    let values: string[]
+    let values: any[]
     values = line.split(",").map((v) => v.trim());  
 
     if (schema === undefined){
@@ -55,11 +61,11 @@ export async function parseCSV<T>(path: string, schema: z.ZodType<T>): Promise<s
         result.push(parsedValues.data)
       }
       else{
-        return {error: parsedValues.error, line: lineNumber, row: values}
+        return {success: false, error: parsedValues.error, line: lineNumber, row: values}
       }
     }
   
   }
-  return result
+  return {success: true, data: result}
 }
 
