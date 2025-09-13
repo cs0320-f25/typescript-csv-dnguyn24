@@ -5,6 +5,8 @@ import { z } from "zod";
 const PEOPLE_CSV_PATH = path.join(__dirname, "../data/people.csv");
 const ROLE_CSV_PATH = path.join(__dirname, "../data/role.csv");
 const EMPTY_LINES_CSV_PATH = path.join(__dirname, "../data/empty.csv");
+const TEST = path.join(__dirname, "../data/test.csv");
+const MISSING = path.join(__dirname, "../data/missingField.csv");
 
 // test("parseCSV yields arrays", async () => {
 //   const results = await parseCSV(PEOPLE_CSV_PATH)
@@ -65,10 +67,53 @@ test("parseCSV fails on text representing number", async () => {
   }
   
 });
+
+test("parseCSV handles larger schema", async () => {
+  const schema = z.tuple([z.string(), z.string(), z.coerce.number(), z.string().transform(val => val.toLowerCase() === 'true')]);
+  const results = await parseCSV(TEST, schema)
+  if (results.success){
+    expect(results.data[0]).toEqual(["Tim", "teacher", 30, false]);
+    expect(results.data[1]).toEqual(["Andy", "fire fighter", 56, true]); 
+    expect(results.data[2]).toEqual(["Linda", "pilot", 3, true]);
+  }
+  else{
+    console.log(results);
+    fail();
+  }
+});
+
+
+test("parseCSV handled undefined schema", async () => {
+  const results = await parseCSV(TEST, undefined)
+  if (results.success){
+    expect(results.data[0]).toEqual(["Tim", "teacher", "30", "false"]);
+    expect(results.data[1]).toEqual(["Andy", "fire fighter", "56", "true"]); 
+    expect(results.data[2]).toEqual(["Linda", "pilot", "3", "true"]);
+  }
+  else{
+    console.log(results);
+    fail();
+  }
+
+
+});
+
+test("parseCSV returns error for missing fields", async () => {
+  const schema = z.tuple([z.string(), z.string(), z.coerce.number(), z.string().transform(val => val.toLowerCase() === 'true')]);
+  const results = await parseCSV(MISSING, schema)
+  if(results.success){
+    expect(results.data[0]).toEqual(["Tim", "teacher", 30, false]);
+    expect(results.data[1]).toEqual(["Andy", "fire fighter", 56, true]);
+    expect(results.data[2]).toEqual(["Linda", "pilot", 3, true]);
+    expect(results.data[3]).toEqual(["Bob", 29, false]);
+  }
+  else{
+    console.log(results);
+  }
+});
+
+
  
-
-
-
 
 
 

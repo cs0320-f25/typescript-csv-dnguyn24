@@ -26,7 +26,7 @@ async function main() {
     console.log(record)
   }
   else{
-    console.log("I am here")
+    console.log("error on line ", results.line, " : ", results.error);
   }
   
 }

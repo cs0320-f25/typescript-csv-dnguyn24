@@ -29,7 +29,7 @@ interface Success<T>{
  * @param path The path to the file being loaded.
  * @returns a "promise" to produce a 2-d array of cell values
  */
-export async function parseCSV<T>(path: string, schema: z.ZodType<T>): Promise<Error<T> | Success<T>>{
+export async function parseCSV<T>(path: string, schema?: z.ZodType<T>): Promise<Error<T> | Success<T>>{
   // This initial block of code reads from a file in Node.js. The "rl"
   // value can be iterated over in a "for" loop. 
   const fileStream = fs.createReadStream(path);
