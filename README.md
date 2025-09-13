@@ -1,6 +1,6 @@
 # Sprint 1: TypeScript CSV
 
-### Task C: Proposing Enhancement
+### Task B: Proposing Enhancement
 
 - #### Step 1: Brainstorm on your own.
 Handling line breaks inside of quotes, fields inside double quotes as one, using other separators besides commas, maybe converting numbers that are strings into type number, handle title row in CSV, missing fields
@@ -47,12 +47,23 @@ a wide variety of data types.
 
 - #### 3. Overall experience, Bugs encountered and resolved
 #### Errors/Bugs: 
-The main bugs that were encountered 
+The main bugs that were encountered were handling fields that contain delimiters inside of quotes and treating them as a single field instead of multiple, and the parser not being able to convert strings into their respective numbers such as "thirty" into "30".
 #### Tests:
+For the initial test suite, beyond the provided test showing the issue with strings to numbers, I included tests for the parser only yielding its specified type of string[][], handling delimiters in quotes, trimming whitespace, missing values, and empty lines. The first two tests I added correlated with definition of a CSV parser provided in the documentation. 
+
+In the test suite for after I implemented the schema parameter, I looked at things like raising errors for text representing numbers, handling larger schemas with multiple data types, handling undefined schemas, and raising errors for missing fields. These tests ensured that the parser followed the correct convention of returning an array of type any if a schema is provided or returning the default case string[][] when an undefined schema is passed in. The two tests for errors made sure that the error messages were functioning properly in the event of improper data types and missing fields. 
 #### How To…
+For the tests, I commented out my initial tests before the schema was added, but when run, the test labeled "parseCSV handles commas inside double quotes" should fail. All the other tests should run normally when prompted in the terminal. 
+
+For the tests that aren't commented out, I structured them to include examples of schemas corresponding to a matching csv, and the expected values to only run if the success message is raised. Otherwise, the error message will be raised in the console. The test will also fail depending on what it is. For some tests, like missing fields, error messages will be raised, but I didn't want the test to necessarily fail in order to see parse everything. Running it should be the same as the initial tests.
+
+To run the "run-parser" file, I would modify the file path that I am testing and the corresponding schema. Everything besides that process should be the same. 
 
 #### Team members and contributions (include cs logins):
 
-#### Collaborators (cslogins of anyone you worked with on this project and/or generative AI):
+#### Collaborators (cslogins of anyone you worked with on this project and/or generative AI): 
+I utilized generative AI for the portions asking for an LLM suggestions in task B and for syntax with typescript such as how to initialize multiple different datatype arrays and how to pass in undefined values for schemas. 
+
 #### Total estimated time it took to complete project:
+5 hours
 #### Link to GitHub Repo:  

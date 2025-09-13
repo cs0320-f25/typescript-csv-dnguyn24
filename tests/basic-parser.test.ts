@@ -28,7 +28,7 @@ const MISSING = path.join(__dirname, "../data/missingField.csv");
 
 // test("parseCSV handles commas inside double quotes", async () => {
 //   const results = await parseCSV(ROLE_CSV_PATH)
-//   expect(results[1]).toHaveLength(3);
+//   expect(results[1]).toHaveLength(4);
 // });
 
 
@@ -106,6 +106,17 @@ test("parseCSV returns error for missing fields", async () => {
     expect(results.data[1]).toEqual(["Andy", "fire fighter", 56, true]);
     expect(results.data[2]).toEqual(["Linda", "pilot", 3, true]);
     expect(results.data[3]).toEqual(["Bob", 29, false]);
+  }
+  else{
+    console.log(results);
+  }
+});
+
+test("parseCSV handling delimiters in quotes", async () => {
+  const results = await parseCSV(ROLE_CSV_PATH)
+  if (results.success){
+    expect(results.data[1]).toEqual(["Nim", "Telson", "CSCI 0320, Math 0100, UNIV 1110", "student"]);
+    expect(results.data[1]).toHaveLength(4);
   }
   else{
     console.log(results);
