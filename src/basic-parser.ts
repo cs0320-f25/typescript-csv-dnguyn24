@@ -1,11 +1,11 @@
 import * as fs from "fs";
 import * as readline from "readline";
-import {z, ZodIssue} from "zod";
+import {z} from "zod";
 
 
 
 interface Error<T>{
-  error: z.ZodError<T>
+  error: z.ZodError
   line: number
   row: string[]
 }
@@ -23,7 +23,7 @@ interface Error<T>{
  * @param path The path to the file being loaded.
  * @returns a "promise" to produce a 2-d array of cell values
  */
-export async function parseCSV<T>(path: string, schema: z.ZodType<T>): Promise<string[][] | Error>  {
+export async function parseCSV<T>(path: string, schema: z.ZodType<T>): Promise<string[][] | Error<T> | T[]>  {
   // This initial block of code reads from a file in Node.js. The "rl"
   // value can be iterated over in a "for" loop. 
   const fileStream = fs.createReadStream(path);
@@ -35,7 +35,7 @@ export async function parseCSV<T>(path: string, schema: z.ZodType<T>): Promise<s
 
   
   // Create an empty array to hold the results
-  let result = []
+  let result: any[] = []
   
   // We add the "await" here because file I/O is asynchronous. 
   // We need to force TypeScript to _wait_ for a row before moving on. 
@@ -43,7 +43,7 @@ export async function parseCSV<T>(path: string, schema: z.ZodType<T>): Promise<s
   let lineNumber = 0;
   for await (const line of rl) {
     lineNumber++;
-    let values: string[];
+    let values: string[]
     values = line.split(",").map((v) => v.trim());  
 
     if (schema === undefined){
@@ -52,16 +52,14 @@ export async function parseCSV<T>(path: string, schema: z.ZodType<T>): Promise<s
     else{
       const parsedValues = schema.safeParse(values)
       if (parsedValues.success){
-        result.push(Object.values(values))
+        result.push(parsedValues.data)
       }
       else{
-        return {error: parsedValues.error.issues, line: lineNumber, row: values}
+        return {error: parsedValues.error, line: lineNumber, row: values}
       }
     }
   
   }
   return result
-
-
 }
 
